@@ -1,0 +1,37 @@
+{
+  "name": "alchemy",
+  "version": "1.0.0",
+  "description": "A bunch of alchemy arrays and transmutation like algorithms focusing on capturing the geometry associated with alchemical works",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evelios/alchemy.git"
+  },
+  "keywords": [
+    "alchemy",
+    "geometry",
+    "transmutation",
+    "elements",
+    "vector",
+    "grammar",
+    "generative"
+  ],
+  "author": "Thomas Waters",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Evelios/alchemy/issues"
+  },
+  "homepage": "https://github.com/Evelios/alchemy#readme",
+  "dependencies": {
+    "flatten-line-tree": "git+https://github.com/Evelios/flatten-line-tree.git",
+    "line-segment-intersection": "git+https://github.com/Evelios/line-segment-intersection.git",
+    "new-array": "^1.0.0",
+    "optimize-paths": "git+https://github.com/Evelios/optimize-path.git",
+    "penplot": "^3.0.0",
+    "regular-polygon": "git+https://github.com/Evelios/regular-polygon.git",
+    "vector": "git+https://github.com/Evelios/Vector.git"
+  }
+}
