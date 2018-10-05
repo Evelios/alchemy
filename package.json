@@ -4,7 +4,7 @@
   "description": "A bunch of alchemy arrays and transmutation like algorithms focusing on capturing the geometry associated with alchemical works",
   "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/transmutation-test.js"
   },
   "repository": {
     "type": "git",
@@ -26,12 +26,15 @@
   },
   "homepage": "https://github.com/Evelios/alchemy#readme",
   "dependencies": {
+    "alea": "^1.0.0",
     "flatten-line-tree": "git+https://github.com/Evelios/flatten-line-tree.git",
     "line-segment-intersection": "git+https://github.com/Evelios/line-segment-intersection.git",
     "new-array": "^1.0.0",
     "optimize-paths": "git+https://github.com/Evelios/optimize-path.git",
     "penplot": "^3.0.0",
+    "rand": "0.0.4",
     "regular-polygon": "git+https://github.com/Evelios/regular-polygon.git",
+    "tape": "^4.9.1",
     "vector": "git+https://github.com/Evelios/Vector.git"
   }
 }

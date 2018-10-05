@@ -1,5 +1,5 @@
-import Vector from 'vector';
-import regularPolygon from 'regular-polygon';
+const Vector = require('vector');
+const regularPolygon = require('regular-polygon');
 
 module.exports = (function() {
 
