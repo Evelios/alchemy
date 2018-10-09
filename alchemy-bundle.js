@@ -179,7 +179,7 @@ module.exports = (function() {
     cage4            : cage4,
 
     // Advanced
-    elementCircle    : elementCircle,
+    // elementCircle    : elementCircle,
   };
 
 })();
