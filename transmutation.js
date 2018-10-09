@@ -1,13 +1,15 @@
-const AnchemyAlgorithms = require('./alchemy-bundle');
+const regularPolygon = require('regular-polygon');
+const Vector = require('vector');
 const Alea = require('alea');
 const Rand = require('rand');
 
+const AlchemyAlgorithms = require('./alchemy-bundle');
+
 module.exports = (function () {
+  let self = {};
+  const CIRCLE_SIDES = 300;
 
-  this.algorithms = getAllAlgorithms();
-
-  
-  this.randInt = (min, max) => min + Math.ceil(Math.random() * max);
+  self.randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
 
   /**
    * Create an alchemy transmutation. A collection of strokes leading to
@@ -19,9 +21,9 @@ module.exports = (function () {
    *  ** This could be changed to a bounding function **
    * @param {number} min_size The minimum size of a circle to stop working inwards
    */
-  const transmute = function(center, starting_size, max_size, min_size) {
+  self.transmute = function(center, starting_size, max_size, min_size) {
 
-    const starting_polygon = getStartingPolygon();
+    const starting_polygon = getCircle(center, starting_size);
 
     let transmutation_polygons = [starting_polygon];
     let processed_transmutations = [starting_polygon];
@@ -49,27 +51,22 @@ module.exports = (function () {
   };
 
   // Only works for regular polygons
-  const polygonSize = function(poly) {
-    return 2 * Vector.distance(poly[0], Vector.avg(poly));
+  self.polygonSize = function(poly) {
+    return Vector.distance(poly[0], Vector.avg(poly));
   };
 
-  const getStartingPolygon = function() {
-    
+  self.getPolygonCircle = function(center, size) {
+    return regularPolygon(CIRCLE_SIDES, center, size);
   };
 
-  const getNextAlgorithm = function() {
-    return this.algorithms()
+  self.getNextAlgorithm = function() {
+    const algorithms = self.getAllAlgorithms();
+    return algorithms[self.randInt(0, algorithms.length - 1)];
   };
 
-  const getAllAlgorithms = function() {
-    return Object.entries(AnchemyAlgorithms).map(kv_pair => kv_pair[1]);
+  self.getAllAlgorithms = function() {
+    return Object.entries(AlchemyAlgorithms).map(kv_pair => kv_pair[1]);
   };
 
-  return {
-    transmute,
-    polygonSize,
-    getStartingPolygon,
-    getAllAlgorithms,
-  }
-
+  return self;
 })();
