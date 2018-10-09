@@ -1,6 +1,6 @@
 const test = require('tape');
 const regularPolygon = require('regular-polygon');
-const AlchemyAlgorithms = require('./transmutation');
+const AlchemyAlgorithms = require('../alchemy-bundle');
 
 const isFunction = obj => {
   return obj && {}.toString.call(obj) === '[object Function]';
