@@ -4,7 +4,7 @@ import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
 import regularPolygon from 'regular-polygon';
 import flattenLineTree from 'flatten-line-tree';
-import Alchemy from './alchemy-bundle';
+import Alchemy from '../algorithms/alchemy-bundle';
 import Vector from 'vector';
 
 export const orientation = Orientation.LANDSCAPE;
@@ -35,39 +35,21 @@ export default function createPlot(context, dimensions) {
       const designPatterns = {
       
         0 : () => {
-          return Alchemy.elementCircle(poly_sides, poly_center, circle_radius, starting_rotation);
+          const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
+          const center_lines = Alchemy.connectVerticies(base);
+          return [base, center_lines];
         },
 
         1 : () => {
-
           const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
-
-          const nestedCirclePoly = (poly, depth) => {
-            const outcircle = Alchemy.outcircle(poly);
-            const inscribed = Alchemy.inscribePolygon(poly);
-            if (depth > 1) {
-              return [outcircle, inscribed].concat(nestedCirclePoly(inscribed, depth - 1));
-            } else {
-              return [outcircle, inscribed];
-            }
-          };
-
-          return [base].concat(nestedCirclePoly(base, num_polys));
+          const center_lines = Alchemy.connectMidpoints(base);
+          return [base, center_lines];
         },
 
         2 : () => {
           const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
-
-          const nestedCirclePoly = (poly, depth) => {
-            const inscribed = Alchemy.inscribePolygon(poly);
-            if (depth > 1) {
-              return [inscribed].concat(nestedCirclePoly(inscribed, depth - 1));
-            } else {
-              return [inscribed];
-            }
-          };
-
-          return [base].concat(nestedCirclePoly(base, num_polys));
+          const center_lines = Alchemy.inset(base);
+          return [base, center_lines];
         }
 
       };

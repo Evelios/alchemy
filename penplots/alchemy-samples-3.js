@@ -4,7 +4,7 @@ import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
 import regularPolygon from 'regular-polygon';
 import flattenLineTree from 'flatten-line-tree';
-import Alchemy from './alchemy-bundle';
+import Alchemy from '../algorithms/alchemy-bundle';
 import Vector from 'vector';
 
 export const orientation = Orientation.LANDSCAPE;
@@ -16,7 +16,7 @@ export default function createPlot(context, dimensions) {
   const working_width = width - margin;
   const working_height = height - margin;
   const num_polys = 5;
-  const nrows = 3;
+  const nrows = 4;
   const circle_radius = 2;
   const starting_rotation = Math.PI / 2;
 
@@ -28,27 +28,33 @@ export default function createPlot(context, dimensions) {
       const depth = poly_sides;
 
       const poly_center = [
-        margin     + circle_radius + poly_num / num_polys * working_width,
-        margin * 2 + circle_radius + row      / nrows     * working_height
+        margin + circle_radius + poly_num / num_polys * working_width,
+        margin + circle_radius + row      / nrows     * working_height
       ];
 
       const designPatterns = {
       
         0 : () => {
           const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
-          const center_lines = Alchemy.connectVerticies(base);
+          const center_lines = Alchemy.cage(base);
           return [base, center_lines];
         },
 
         1 : () => {
           const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
-          const center_lines = Alchemy.connectMidpoints(base);
+          const center_lines = Alchemy.cage2(base);
           return [base, center_lines];
         },
 
         2 : () => {
           const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
-          const center_lines = Alchemy.inset(base);
+          const center_lines = Alchemy.cage3(base);
+          return [base, center_lines];
+        },
+
+        3 : () => {
+          const base = regularPolygon(poly_sides, poly_center, circle_radius, starting_rotation);
+          const center_lines = Alchemy.cage4(base);
           return [base, center_lines];
         }
 
