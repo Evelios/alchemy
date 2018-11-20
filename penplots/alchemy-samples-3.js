@@ -4,7 +4,7 @@ import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
 import regularPolygon from 'regular-polygon';
 import flattenLineTree from 'flatten-line-tree';
-import Alchemy from '../algorithms/alchemy-bundle';
+import Alchemy from '../alchemy-bundle';
 import Vector from 'vector';
 
 export const orientation = Orientation.LANDSCAPE;
