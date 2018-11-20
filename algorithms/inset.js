@@ -1,8 +1,26 @@
 const Vector = require('vector');
+const regularPolygon = require('regular-polygon');
 
-module.exports = function inset(polygon, num_sides, strength, rotation=0) {
-  const center = Vector.avg(polygon);
-  const inset_radius = strength * Vector.distance(polygon[0], center);
+module.exports = function inset(continuation, strength=0.75) {
+  const inset_radius = strength * continuation.radius; 
 
-  return regularPolygon(num_sides, center, inset_radius, rotation);
+  let output_polygon = regularPolygon(
+    continuation.nsides,
+    continuation.center,
+    inset_radius,
+    continuation.rotation
+  );
+
+  output_polygon.push(output_polygon[0]);
+
+  return {
+    rendering : output_polygon,
+    forks     : [],
+    interior  : {
+      center   : continuation.center,
+      radius   : inset_radius,
+      nsides   : continuation.nsides,
+      rotation : continuation.rotation
+    } 
+  };
 };

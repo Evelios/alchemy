@@ -1,36 +1,30 @@
 import { PaperSize, Orientation } from 'penplot';
 import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
+import flattenLineTree from 'flatten-line-tree';
+import Transmutation from './transmutation';
+import regularPolygon from 'regular-polygon';
+import { start } from 'repl';
 
 export const orientation = Orientation.LANDSCAPE;
 export const dimensions = PaperSize.LETTER;
 
 export default function createPlot (context, dimensions) {
   const [ width, height ] = dimensions;
+  const margin = 1.5;
+  const working_width = width - margin * 2;
+  const working_height = height - margin * 2; 
+  const center = [width / 2, height / 2];
+  const starting_size = 7;
+  const max_size = working_width;
+  const min_size = 1;
   let lines = [];
 
-  // Draw some circles expanding outward
-  const steps = 5;
-  const count = 20;
-  const spacing = 1;
-  const radius = 2;
-  for (let j = 0; j < count; j++) {
-    const r = radius + j * spacing;
-    const circle = [];
-    for (let i = 0; i < steps; i++) {
-      const t = i / Math.max(1, steps - 1);
-      const angle = Math.PI * 2 * t;
-      circle.push([
-        width / 2 + Math.cos(angle) * r,
-        height / 2 + Math.sin(angle) * r
-      ]);
-    }
-    lines.push(circle);
-  }
+  lines.push(Transmutation.transmute(center, starting_size, max_size, min_size));
 
   // Clip all the lines to a margin
-  const margin = 1.5;
   const box = [ margin, margin, width - margin, height - margin ];
+  lines = flattenLineTree(lines);
   lines = clipPolylinesToBox(lines, box);
 
   return {
