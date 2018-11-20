@@ -1,10 +1,7 @@
 const Transmutation = require('../transmutation');
 const test = require('tape');
-
-
-const isFunction = obj => {
-  return obj && {}.toString.call(obj) === '[object Function]';
-}
+const TestUtils = require('./test-utils');
+const isFunction = TestUtils.isFunction;
 
 test('getAllAlgorithms : results are functions', t => {
   const startingAlgorithms = Transmutation.getAllAlgorithms();

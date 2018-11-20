@@ -1,6 +1,12 @@
 const regularPolygon = require('regular-polygon');
 const Vector = require('vector');
 const Alea = require('alea');
+//
+// TODO: Create a constructor and think about what the important variables to be in
+//  the main object are. This could be some of the base returned continuations. Any
+//  information that needs to be held about the output of one transmutation algorithm
+//  to the next. Implementation details should be hidden from this function
+
 const Rand = require('rand');
 
 const AlchemyAlgorithms = require('./alchemy-bundle');
@@ -48,6 +54,10 @@ module.exports = (function () {
 
 
     }
+  };
+
+  self.isForkingContinuation = function(transmutation) {
+    return transmutation.forks.lengths > 0;
   };
 
   // Only works for regular polygons
