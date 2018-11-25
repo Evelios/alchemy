@@ -1,4 +1,5 @@
 const Vector = require('vector');
+const intset = require('./inset.js');
 
 module.exports = function inscribePolygon(polygon) {
 /**

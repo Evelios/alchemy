@@ -1,14 +1,16 @@
 const Vector = require('vector');
 const regularPolygon = require('regular-polygon');
 
-module.exports = function inset(continuation, strength=0.75) {
-  const inset_radius = strength * continuation.radius;
+module.exports = function inscribe(continuation) {
+  const nsides = continuation.nsides
+  const inset_radius = continuation.radius * Math.cos(Math.PI / nsides);
+  const inset_rotation = continuation.rotation + Math.PI / nsides;
 
   let output_polygon = regularPolygon(
-    continuation.nsides,
+    nsides,
     continuation.center,
-    inset_radius,
-    continuation.rotation
+    continuation.radius,
+    inset_rotation
   );
   output_polygon.push(output_polygon[0]);
 
@@ -19,7 +21,7 @@ module.exports = function inset(continuation, strength=0.75) {
       center   : continuation.center,
       radius   : inset_radius,
       nsides   : continuation.nsides,
-      rotation : continuation.rotation
+      rotation : inset_rotation 
     } 
   };
 };

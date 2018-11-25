@@ -9,7 +9,7 @@ const regularPolygon = require('regular-polygon');
 const Vector = require('vector');
 const Alea = require('alea');
 const Rand = require('rand');
-const inset = require('./transmutations/inset');
+const inscribe = require('./transmutations/inscribe');
 const fork = require('./transmutations/fork');
 
 module.exports = (function () {
@@ -89,10 +89,6 @@ module.exports = (function () {
   }
 
   self.isCircleLargeEnough = function(circle, min_size) {
-    // console.log(circle);
-    // console.log(circle.radius);
-    // console.log(min_size);
-    // console.log(circle.radius > min_size);
     return circle.radius > min_size; 
   }
 
@@ -118,9 +114,8 @@ module.exports = (function () {
 
   self.getAllAlgorithms = function() {
     return [
-      inset
+      inscribe
     ];
-    // return Object.entries(AlchemyAlgorithms).map(kv_pair => kv_pair[1]);
   };
 
   return self;
