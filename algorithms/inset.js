@@ -1,26 +1,18 @@
 const Vector = require('vector');
-const regularPolygon = require('regular-polygon');
 
-module.exports = function inset(continuation, strength=0.75) {
-  const inset_radius = strength * continuation.radius; 
+module.exports = function inset(polygon, ammount=0.5, rotation=0) {
+/**
+ * Inset a polygon within another polygon by a particular ammount and rotation
+ *
+ * @returns {Vector[]} The inset polygon
+ *
+ */
+    const center = Vector.avg(polygon);
 
-  let output_polygon = regularPolygon(
-    continuation.nsides,
-    continuation.center,
-    inset_radius,
-    continuation.rotation
-  );
+    const base_radius = Vector.distance(polygon[0], center);
+    const radius = base_radius * ammount;
 
-  output_polygon.push(output_polygon[0]);
-
-  return {
-    rendering : output_polygon,
-    forks     : [],
-    interior  : {
-      center   : continuation.center,
-      radius   : inset_radius,
-      nsides   : continuation.nsides,
-      rotation : continuation.rotation
-    } 
-  };
+    const base_rotation = Vector.angle(Vector.subtract(polygon[0], center));
+    const inset_rotation = base_rotation + rotation;
+    return regularPolygon(polygon.length, center, radius, inset_rotation);
 };

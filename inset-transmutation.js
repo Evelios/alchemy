@@ -13,7 +13,7 @@ export default function createPlot (context, dimensions) {
   const [ width, height ] = dimensions;
   const margin = 1.5;
   const working_width = width - margin * 2;
-  const working_height = height - margin * 2; 
+  const working_height = height - margin * 2;
   const center = [width / 2, height / 2];
   const starting_size = 7;
   const max_size = working_width;
