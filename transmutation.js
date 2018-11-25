@@ -10,7 +10,8 @@ const Vector = require('vector');
 const Alea = require('alea');
 const Rand = require('rand');
 const inscribe = require('./transmutations/inscribe');
-const fork = require('./transmutations/fork');
+const internalFork = require('./transmutations/internal-fork');
+const externalFork = require('./transmutations/fork');
 
 module.exports = (function () {
   const CIRCLE_SIDES = 300;
@@ -32,7 +33,7 @@ module.exports = (function () {
     const starting_circle = {
       center   : center,
       radius   : starting_size,
-      nsides   : 6,
+      nsides   : 5, 
       rotation : 0,
     };
 
@@ -67,8 +68,8 @@ module.exports = (function () {
         }
       }
 
-      console.log('Transmutation Forks :');
-      console.log(output_transmutation.forks);
+      // console.log('Transmutation Forks :');
+      // console.log(output_transmutation.forks);
       
       algorithm_index++;
     }
@@ -105,7 +106,7 @@ module.exports = (function () {
 
   self.getNextAlgorithm = function() {
     if (algorithm_index === 0) {
-      return fork;
+      return internalFork;
     }
 
     const algorithms = self.getAllAlgorithms();
