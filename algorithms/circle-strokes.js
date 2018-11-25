@@ -1,12 +1,12 @@
 const regularPolygon = require('regular-polygon');
 
-module.exports = function circleStroke(poly) {
+module.exports = function(circle) {
+  const N_CIRCLE_SIDES = 300;
 
   let strokes = regularPolygon(
-    poly.nsides,
-    poly.center,
-    poly.radius,
-    poly.rotation
+    N_CIRCLE_SIDES,
+    circle.center,
+    circle.radius,
   );
 
   strokes.push(strokes[0]);

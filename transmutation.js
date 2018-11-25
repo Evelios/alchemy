@@ -11,7 +11,8 @@ const Alea = require('alea');
 const Rand = require('rand');
 const inscribe = require('./transmutations/inscribe');
 const internalFork = require('./transmutations/internal-fork');
-const externalFork = require('./transmutations/fork');
+const externalFork = require('./transmutations/external-fork');
+const ring = require('./transmutations/ring');
 
 module.exports = (function () {
   const CIRCLE_SIDES = 300;
@@ -54,13 +55,12 @@ module.exports = (function () {
       // Add the output to the tracking arrays
       output_renderings.push(output_transmutation.rendering);
 
-      // console.log('Transmutation Interior :');
-      // console.log(output_transmutation.interior);
-
+      // Add the interior continuations
       if (self.isInteriorContinuation(output_transmutation, min_size)) {
         transmutation_locations.push(output_transmutation.interior);
       }
 
+      // Add the forking continuations
       if (self.isForkingContinuation(output_transmutation)) {
         const continuations = output_transmutation.forks.filter(c => self.isCircleLargeEnough(c, min_size));
         if (continuations.length > 0) {
@@ -68,13 +68,8 @@ module.exports = (function () {
         }
       }
 
-      // console.log('Transmutation Forks :');
-      // console.log(output_transmutation.forks);
-      
       algorithm_index++;
     }
-
-    console.log(output_renderings);
 
     return output_renderings;
   };
@@ -82,7 +77,7 @@ module.exports = (function () {
   self.randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
 
   self.isForkingContinuation = function(transmutation) {
-    return transmutation.forks.length > 0;
+    return transmutation.forks && transmutation.forks.length > 0;
   };
 
   self.isInteriorContinuation = function(transmutation, min_size) {
@@ -115,7 +110,7 @@ module.exports = (function () {
 
   self.getAllAlgorithms = function() {
     return [
-      inscribe
+      ring
     ];
   };
 

@@ -1,20 +1,22 @@
 const Vector = require('vector');
-const intset = require('./inset.js');
 
-module.exports = function inscribePolygon(polygon) {
+module.exports = function(poly) {
 /**
  * Inscribe a regular polygon inside another regular polygon. The new polygon
  * will have the same number of sides as the origional and will be rotated so
  * that the endpoints of the inner polygon touch the midpoints of the outer
  * polygon.
  * 
- * @returns {Vector[]} The inscribed polygon
+ * @param {Polygon} The polygon to inscribe inside 
+ * @returns {Polygon} The inscribed polygon
  */
-  const nsides = polygon.length;
-  const center = Vector.avg(polygon);
+  const rotation = poly.rotation + Math.PI / poly.nsides;
+  const inset_ammount = poly.radius * Math.cos(Math.PI / poly.nsides);
 
-  const rotation = Math.PI / nsides;
-  const inset_ammount = Math.cos(Math.PI / nsides);
-
-  return inset(polygon, inset_ammount, rotation);
+  return {
+    center   : poly.center,
+    radius   : inset_ammount,
+    rotation : rotation,
+    nsides   : poly.nsides
+  }
 };
