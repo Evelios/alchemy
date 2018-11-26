@@ -28,7 +28,7 @@
   "dependencies": {
     "alea": "^1.0.0",
     "flatten-line-tree": "git+https://github.com/Evelios/flatten-line-tree.git",
-    "line-segment-intersection": "git+https://github.com/Evelios/line-segment-intersection.git",
+    "line-intersection": "git+https://github.com/Evelios/line-intersection.git",
     "new-array": "^1.0.0",
     "optimize-paths": "git+https://github.com/Evelios/optimize-path.git",
     "penplot": "^3.0.0",

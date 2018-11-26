@@ -1,7 +1,7 @@
 import newArray from 'new-array';
 import Vector from 'vector';
 import regularPolygon from 'regular-polygon';
-import lineIntersection from 'line-segment-intersection';
+import lineIntersection from 'line-intersection';
 import flattenLineTree from 'flatten-line-tree';
 import { PaperSize, Orientation } from 'penplot';
 import { randomInt, randomFloat, setSeed } from 'penplot/util/random';

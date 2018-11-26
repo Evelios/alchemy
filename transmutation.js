@@ -13,6 +13,7 @@ const inscribe = require('./transmutations/inscribe');
 const internalFork = require('./transmutations/internal-fork');
 const externalFork = require('./transmutations/external-fork');
 const ring = require('./transmutations/ring');
+const spyglass = require('./transmutations/spyglass');
 
 module.exports = (function () {
   const CIRCLE_SIDES = 300;
@@ -110,7 +111,7 @@ module.exports = (function () {
 
   self.getAllAlgorithms = function() {
     return [
-      ring
+      spyglass
     ];
   };
 

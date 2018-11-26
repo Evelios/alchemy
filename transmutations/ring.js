@@ -6,7 +6,7 @@ const inscribePolygon = require('../algorithms/inscribe-polygon');
 const array = require('new-array');
 
 
-module.exports = function fork(continuation, strength=0.5) {
+module.exports = function(continuation, strength=0.5) {
   const use_endpoints = Math.random() > 0.5;
   const rotate_internal = Math.random() > 0.5;
 
