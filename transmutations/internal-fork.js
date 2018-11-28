@@ -40,7 +40,7 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
       N_CIRCLE_SIDES,
       continuation.center,
       internal_radius,
-      0
+      continuation.rotation
     );
     interior_circle.push(interior_circle[0]);
 

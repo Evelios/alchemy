@@ -5,10 +5,13 @@
 //  to the next. Implementation details should be hidden from this function
 //
 
+// External Algorithms
 const regularPolygon = require('regular-polygon');
 const Vector = require('vector');
 const Alea = require('alea');
 const Rand = require('rand');
+
+// Transmutations
 const inscribe = require('./transmutations/inscribe');
 const internalFork = require('./transmutations/internal-fork');
 const externalFork = require('./transmutations/external-fork');
@@ -101,17 +104,17 @@ module.exports = (function () {
   };
 
   self.getNextAlgorithm = function() {
-    if (algorithm_index === 0) {
-      return internalFork;
-    }
-
     const algorithms = self.getAllAlgorithms();
     return algorithms[self.randInt(0, algorithms.length - 1)];
   };
 
   self.getAllAlgorithms = function() {
     return [
-      spyglass
+      inscribe,
+      externalFork,
+      internalFork,
+      spyglass,
+      ring,
     ];
   };
 
