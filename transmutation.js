@@ -1,33 +1,24 @@
-//
-// TODO: Create a constructor and think about what the important variables to be in
-//  the main object are. This could be some of the base returned continuations. Any
-//  information that needs to be held about the output of one transmutation algorithm
-//  to the next. Implementation details should be hidden from this function
-//
-
 // External Algorithms
-const regularPolygon = require('regular-polygon');
-const Vector = require('vector');
-const Alea = require('alea');
-const Rand = require('rand');
 const defaultOpts = require('default-options');
 
 
 module.exports = (function () {
   const CIRCLE_SIDES = 300;
   let self = {};
+
   let algorithm_index = 0;
   let opts;
 
   self.parseOptions = function(options) {
     const defaults = {
-      center        : undefined,
-      starting_size : undefined,
-      max_size      : undefined,
-      min_size      : undefined,
-      algorithms    : undefined,
-      nsides        : 6,
-      rotation      : 0,
+      center              : undefined,
+      starting_size       : undefined,
+      max_size            : undefined,
+      min_size            : undefined,
+      algorithms          : undefined,
+      algorithm_selection : 'random',
+      nsides              : 6,
+      rotation            : 0,
     };
 
     return defaultOpts(options, defaults);
@@ -40,8 +31,6 @@ module.exports = (function () {
   self.transmute = function(options) {
 
     opts = self.parseOptions(options);
-
-    console.log(opts)
 
     const starting_circle = {
       center   : opts.center,
@@ -72,7 +61,7 @@ module.exports = (function () {
 
       // Add the forking continuations
       if (self.isForkingContinuation(output_transmutation)) {
-        const continuations = output_transmutation.forks.filter(c => self.isCircleLargeEnough(c, opts.min_size));
+        const continuations = output_transmutation.forks.filter(c => c.radius > opts.min_size);
         if (continuations.length > 0) {
           transmutation_locations.push(...continuations);
         }
@@ -84,28 +73,35 @@ module.exports = (function () {
     return output_renderings;
   };
 
-  self.randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
-
   self.isForkingContinuation = function(transmutation) {
     return transmutation.forks && transmutation.forks.length > 0;
   };
 
   self.isInteriorContinuation = function(transmutation, min_size) {
-    return transmutation.interior && self.isCircleLargeEnough(transmutation.interior, min_size);
+    return transmutation.interior && transmutation.interior.radius > min_size;
   }
 
   self.isCircleLargeEnough = function(circle, min_size) {
-    return circle.radius > min_size; 
+    return circle.radius > min_size;
   }
 
-  // Only works for regular polygons
-  self.polygonSize = function(poly) {
-    return Vector.distance(poly[0], Vector.avg(poly));
-  };
+  // ---- Algorithm Selection --------------------------------------------------
 
   self.getNextAlgorithm = function() {
-    return opts.algorithms[self.randInt(0, opts.algorithms.length - 1)];
+    switch (opts.algorithm_selection) {
+      case 'random':
+        return self.getRandomAlgorithm();
+        break;
+
+      default:
+        throw new Error(`Value Error : Invalid Algorithm Selection Value ${opts.algorithm_selection}`);
+    }
   };
 
-  return self;
+  self.getRandomAlgorithm = function() {
+    const randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
+    return opts.algorithms[randInt(0, opts.algorithms.length - 1)];
+  }
+
+  return self.transmute;
 })();

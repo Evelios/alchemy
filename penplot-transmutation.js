@@ -2,7 +2,7 @@ import { PaperSize, Orientation } from 'penplot';
 import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
 import flattenLineTree from 'flatten-line-tree';
-import Transmutation from './transmutation';
+import transmutation from './transmutation';
 import regularPolygon from 'regular-polygon';
 import { start } from 'repl';
 
@@ -34,7 +34,7 @@ export default function createPlot (context, dimensions) {
     spyglass,
   ];
 
-  let lines = Transmutation.transmute({
+  let lines = transmutation({
     center,
     starting_size,
     max_size,
