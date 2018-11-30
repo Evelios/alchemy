@@ -65,8 +65,6 @@ module.exports = function fork(continuation) {
     const interior_radius = continuation.radius * Math.cos(Math.PI / nsides);
     const interior_rotation = continuation.rotation + Math.PI / continuation.nsides;
 
-    console.log(interior_rotation);
-
     return {
       center   : continuation.center,
       radius   : interior_radius,

@@ -12,24 +12,20 @@ const Alea = require('alea');
 const Rand = require('rand');
 const defaultOpts = require('default-options');
 
-// Transmutations
-const inscribe = require('./transmutations/inscribe');
-const internalFork = require('./transmutations/internal-fork');
-const externalFork = require('./transmutations/external-fork');
-const ring = require('./transmutations/ring');
-const spyglass = require('./transmutations/spyglass');
 
 module.exports = (function () {
   const CIRCLE_SIDES = 300;
   let self = {};
   let algorithm_index = 0;
+  let opts;
 
   self.parseOptions = function(options) {
     const defaults = {
       center        : undefined,
       starting_size : undefined,
       max_size      : undefined,
-      min_size      : undefined
+      min_size      : undefined,
+      algorithms    : undefined,
     };
 
     return defaultOpts(options, defaults);
@@ -38,16 +34,10 @@ module.exports = (function () {
   /**
    * Create an alchemy transmutation. A collection of strokes leading to
    * an alchemy print.
-   *
-   * @param {Vector} center The starting center point of the algorithm
-   * @param {number} starting_size The starting size of the initial node
-   * @param {number} max_size The maximum size to stop branching the algorithm
-   *  ** This could be changed to a bounding function **
-   * @param {number} min_size The minimum size of a circle to stop working inwards
    */
   self.transmute = function(options) {
 
-    const opts = self.parseOptions(options);
+    opts = self.parseOptions(options);
 
     const starting_circle = {
       center   : opts.center,
@@ -55,8 +45,6 @@ module.exports = (function () {
       nsides   : 7,
       rotation : 0,
     };
-
-    // const starting_rendering = self.getPolygonCircle(starting_circle);
 
     let transmutation_locations = [starting_circle];
     let output_renderings = [];
@@ -111,25 +99,8 @@ module.exports = (function () {
     return Vector.distance(poly[0], Vector.avg(poly));
   };
 
-  self.getPolygonCircle = function(circle) {
-    let polygon = regularPolygon(CIRCLE_SIDES, circle.center, circle.radius);
-    polygon.push(polygon[0]);
-    return polygon;
-  };
-
   self.getNextAlgorithm = function() {
-    const algorithms = self.getAllAlgorithms();
-    return algorithms[self.randInt(0, algorithms.length - 1)];
-  };
-
-  self.getAllAlgorithms = function() {
-    return [
-      inscribe,
-      externalFork,
-      internalFork,
-      spyglass,
-      ring,
-    ];
+    return opts.algorithms[self.randInt(0, opts.algorithms.length - 1)];
   };
 
   return self;

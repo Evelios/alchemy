@@ -20,6 +20,6 @@ module.exports = function inset(continuation, strength=0.75) {
       radius   : inset_radius,
       nsides   : continuation.nsides,
       rotation : continuation.rotation
-    } 
+    }
   };
 };

@@ -13,6 +13,10 @@ const paths = Alchemy.transmute(options);
 + starting\_size {number} : The starting size of the initial node
 + max\_size {number} : The maximum size to stop branching the algorithm
 + min\_size {number} : The minimum size of a circle to stop working inwards
++ algorithms {function} : The transmutation functions to use in the generation
+  + param {polygon}
+  + returns {transmutation}
+
 
 
 # Object Types

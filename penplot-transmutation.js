@@ -6,6 +6,13 @@ import Transmutation from './transmutation';
 import regularPolygon from 'regular-polygon';
 import { start } from 'repl';
 
+// Transmutations
+import inscribe from './transmutations/inscribe';
+import internalFork from './transmutations/internal-fork';
+import externalFork from './transmutations/external-fork';
+import ring from './transmutations/ring';
+import spyglass from './transmutations/spyglass';
+
 export const orientation = Orientation.LANDSCAPE;
 export const dimensions = PaperSize.LETTER;
 
@@ -18,9 +25,22 @@ export default function createPlot (context, dimensions) {
   const starting_size = 7;
   const max_size = working_width;
   const min_size = 1;
-  let lines = [];
 
-  lines.push(Transmutation.transmute({center, starting_size, max_size, min_size}));
+  const algorithms = [
+    inscribe,
+    internalFork,
+    externalFork,
+    ring,
+    spyglass,
+  ];
+
+  let lines = Transmutation.transmute({
+    center,
+    starting_size,
+    max_size,
+    min_size,
+    algorithms,
+  });
 
   // Clip all the lines to a margin
   const box = [ margin, margin, width - margin, height - margin ];
