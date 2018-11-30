@@ -26,6 +26,8 @@ module.exports = (function () {
       max_size      : undefined,
       min_size      : undefined,
       algorithms    : undefined,
+      nsides        : 6,
+      rotation      : 0,
     };
 
     return defaultOpts(options, defaults);
@@ -39,11 +41,13 @@ module.exports = (function () {
 
     opts = self.parseOptions(options);
 
+    console.log(opts)
+
     const starting_circle = {
       center   : opts.center,
       radius   : opts.starting_size,
-      nsides   : 7,
-      rotation : 0,
+      nsides   : opts.nsides,
+      rotation : opts.rotation,
     };
 
     let transmutation_locations = [starting_circle];

@@ -8,7 +8,9 @@ const Alchemy = require('transmutation');
 const paths = Alchemy.transmute(options);
 ```
 
-**Options**
+### Options
+
+**Mandatory**  
 + center {Vector} : The starting center point of the algorithm
 + starting\_size {number} : The starting size of the initial node
 + max\_size {number} : The maximum size to stop branching the algorithm
@@ -17,6 +19,9 @@ const paths = Alchemy.transmute(options);
   + param {polygon}
   + returns {transmutation}
 
+**Optional with (default)**  
++ nsides {number} (6) : The initial number of starting sides to the algorithm
++ rotation {number} (0) : The initial rotation of the algorithm in radians
 
 
 # Object Types
