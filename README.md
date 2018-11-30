@@ -1,4 +1,22 @@
-# alchemy
+# Circular Alchemy Array Generation
+
+## Usage
+
+```js
+const Alchemy = require('transmutation');
+
+const paths = Alchemy.transmute(options);
+```
+
+**Options**
++ center {Vector} : The starting center point of the algorithm
++ starting\_size {number} : The starting size of the initial node
++ max\_size {number} : The maximum size to stop branching the algorithm
++ min\_size {number} : The minimum size of a circle to stop working inwards
+
+
+# Object Types
+
 A bunch of alchemy arrays and transmutation like algorithms focusing on capturing the geometry associated with alchemical works
 
 ```js

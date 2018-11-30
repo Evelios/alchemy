@@ -10,6 +10,7 @@ const regularPolygon = require('regular-polygon');
 const Vector = require('vector');
 const Alea = require('alea');
 const Rand = require('rand');
+const defaultOpts = require('default-options');
 
 // Transmutations
 const inscribe = require('./transmutations/inscribe');
@@ -23,22 +24,35 @@ module.exports = (function () {
   let self = {};
   let algorithm_index = 0;
 
+  self.parseOptions = function(options) {
+    const defaults = {
+      center        : undefined,
+      starting_size : undefined,
+      max_size      : undefined,
+      min_size      : undefined
+    };
+
+    return defaultOpts(options, defaults);
+  };
+
   /**
    * Create an alchemy transmutation. A collection of strokes leading to
    * an alchemy print.
-   * 
+   *
    * @param {Vector} center The starting center point of the algorithm
    * @param {number} starting_size The starting size of the initial node
    * @param {number} max_size The maximum size to stop branching the algorithm
    *  ** This could be changed to a bounding function **
    * @param {number} min_size The minimum size of a circle to stop working inwards
    */
-  self.transmute = function(center, starting_size, max_size, min_size) {
+  self.transmute = function(options) {
+
+    const opts = self.parseOptions(options);
 
     const starting_circle = {
-      center   : center,
-      radius   : starting_size,
-      nsides   : 7, 
+      center   : opts.center,
+      radius   : opts.starting_size,
+      nsides   : 7,
       rotation : 0,
     };
 
@@ -60,13 +74,13 @@ module.exports = (function () {
       output_renderings.push(output_transmutation.rendering);
 
       // Add the interior continuations
-      if (self.isInteriorContinuation(output_transmutation, min_size)) {
+      if (self.isInteriorContinuation(output_transmutation, opts.min_size)) {
         transmutation_locations.push(output_transmutation.interior);
       }
 
       // Add the forking continuations
       if (self.isForkingContinuation(output_transmutation)) {
-        const continuations = output_transmutation.forks.filter(c => self.isCircleLargeEnough(c, min_size));
+        const continuations = output_transmutation.forks.filter(c => self.isCircleLargeEnough(c, opts.min_size));
         if (continuations.length > 0) {
           transmutation_locations.push(...continuations);
         }

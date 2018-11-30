@@ -27,6 +27,7 @@
   "homepage": "https://github.com/Evelios/alchemy#readme",
   "dependencies": {
     "alea": "^1.0.0",
+    "default-options": "^1.0.0",
     "flatten-line-tree": "git+https://github.com/Evelios/flatten-line-tree.git",
     "line-intersection": "git+https://github.com/Evelios/line-intersection.git",
     "new-array": "^1.0.0",

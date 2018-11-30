@@ -20,7 +20,7 @@ export default function createPlot (context, dimensions) {
   const min_size = 1;
   let lines = [];
 
-  lines.push(Transmutation.transmute(center, starting_size, max_size, min_size));
+  lines.push(Transmutation.transmute({center, starting_size, max_size, min_size}));
 
   // Clip all the lines to a margin
   const box = [ margin, margin, width - margin, height - margin ];
