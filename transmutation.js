@@ -38,7 +38,7 @@ module.exports = (function () {
     const starting_circle = {
       center   : center,
       radius   : starting_size,
-      nsides   : 5, 
+      nsides   : 7, 
       rotation : 0,
     };
 

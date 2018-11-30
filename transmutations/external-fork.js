@@ -20,7 +20,7 @@ module.exports = function fork(continuation) {
       N_CIRCLE_SIDES,
       continuation.center,
       continuation.radius,
-      0
+      continuation.rotation
     );
     outer_circle.push(outer_circle[0]);
 
@@ -29,7 +29,7 @@ module.exports = function fork(continuation) {
         N_CIRCLE_SIDES,
         pos,
         fork_radius,
-        0
+        continuation.rotation
       );
       circle.push(circle[0]);
       return circle;
@@ -39,7 +39,7 @@ module.exports = function fork(continuation) {
       nsides,
       continuation.center,
       continuation.radius,
-      0
+      continuation.rotation
     );
     interior_polygon.push(interior_polygon[0]);
 
@@ -63,17 +63,20 @@ module.exports = function fork(continuation) {
 
   const getInterior = function() {
     const interior_radius = continuation.radius * Math.cos(Math.PI / nsides);
+    const interior_rotation = continuation.rotation + Math.PI / continuation.nsides;
+
+    console.log(interior_rotation);
 
     return {
       center   : continuation.center,
       radius   : interior_radius,
       nsides   : nsides,
-      rotation : 0
+      rotation : interior_rotation
     };
   };
 
   return {
-    rendering : getRendering(), 
+    rendering : getRendering(),
     forks     : getForks(),
     interior  : getInterior()
   }

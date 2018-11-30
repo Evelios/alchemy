@@ -40,7 +40,7 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
       N_CIRCLE_SIDES,
       continuation.center,
       internal_radius,
-      continuation.rotation
+      0
     );
     interior_circle.push(interior_circle[0]);
 
@@ -64,12 +64,13 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
 
   const getInterior = function() {
     const interior_radius = continuation.radius * Math.cos(Math.PI / nsides);
+    const interior_rotation = continuation.rotation + Math.PI / nsides;
 
     return {
       center   : continuation.center,
       radius   : internal_radius,
       nsides   : nsides,
-      rotation : 0
+      rotation : interior_rotation
     };
   };
 
