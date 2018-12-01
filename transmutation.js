@@ -1,13 +1,16 @@
-// External Algorithms
 const defaultOpts = require('default-options');
 
-
 module.exports = (function () {
-  const CIRCLE_SIDES = 300;
   let self = {};
-
-  let algorithm_index = 0;
   let opts;
+  let depth = 1;
+
+  self.main = function(options) {
+    opts = self.parseOptions(options);
+
+    const node = self.getStartingNode();
+    return self.transmute(node);
+  };
 
   self.parseOptions = function(options) {
     const defaults = {
@@ -24,27 +27,26 @@ module.exports = (function () {
     return defaultOpts(options, defaults);
   };
 
-  /**
-   * Create an alchemy transmutation. A collection of strokes leading to
-   * an alchemy print.
-   */
-  self.transmute = function(options) {
-
-    opts = self.parseOptions(options);
-
-    const starting_circle = {
+  self.getStartingNode = function() {
+    const starting_polygon = {
       center   : opts.center,
       radius   : opts.starting_size,
       nsides   : opts.nsides,
       rotation : opts.rotation,
     };
 
-    let transmutation_locations = [starting_circle];
+    return {
+      interior  : starting_polygon,
+      rendering : [],
+      forks     : [],
+    }
+  }
+
+  self.transmute = function(starting_node) {
+    let transmutation_locations = [starting_node.interior];
     let output_renderings = [];
-    // let output_renderings = [starting_rendering];
 
     while (transmutation_locations.length > 0) {
-      console.log(`Transmutation Index : ${algorithm_index}`);
 
       // Run the next algorithm
       const current_transmutation = transmutation_locations.pop();
@@ -55,7 +57,7 @@ module.exports = (function () {
       output_renderings.push(output_transmutation.rendering);
 
       // Add the interior continuations
-      if (self.isInteriorContinuation(output_transmutation, opts.min_size)) {
+      if (self.isInteriorContinuation(output_transmutation)) {
         transmutation_locations.push(output_transmutation.interior);
       }
 
@@ -66,23 +68,19 @@ module.exports = (function () {
           transmutation_locations.push(...continuations);
         }
       }
-
-      algorithm_index++;
     }
 
     return output_renderings;
-  };
+  }
+
+  // ---- Filtering Functions --------------------------------------------------
 
   self.isForkingContinuation = function(transmutation) {
     return transmutation.forks && transmutation.forks.length > 0;
   };
 
-  self.isInteriorContinuation = function(transmutation, min_size) {
-    return transmutation.interior && transmutation.interior.radius > min_size;
-  }
-
-  self.isCircleLargeEnough = function(circle, min_size) {
-    return circle.radius > min_size;
+  self.isInteriorContinuation = function(transmutation) {
+    return transmutation.interior && transmutation.interior.radius > opts.min_size;
   }
 
   // ---- Algorithm Selection --------------------------------------------------
@@ -103,5 +101,5 @@ module.exports = (function () {
     return opts.algorithms[randInt(0, opts.algorithms.length - 1)];
   }
 
-  return self.transmute;
+  return self.main;
 })();
