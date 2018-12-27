@@ -1,7 +1,6 @@
 const Vector = require('vector');
 const regularPolygon = require('regular-polygon');
 const NewArray = require('new-array');
-const inscribePolygon = require('../algorithms/inscribe-polygon.js');
 
 module.exports = function internalFork(continuation, strength=1/continuation.nsides) {
   const N_CIRCLE_SIDES = 300;
@@ -49,7 +48,7 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
       forking_rendering,
       interior_circle
     ];
-  }
+  };
 
   const getForks = function() {
     return forking_points.map(pos => {
@@ -78,5 +77,5 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
     rendering : getRendering(), 
     forks     : getForks(),
     interior  : getInterior()
-  }
+  };
 };

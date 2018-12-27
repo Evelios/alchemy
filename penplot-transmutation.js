@@ -1,10 +1,9 @@
+// External Modules
 import { PaperSize, Orientation } from 'penplot';
 import { polylinesToSVG } from 'penplot/util/svg';
 import { clipPolylinesToBox } from 'penplot/util/geom';
 import flattenLineTree from 'flatten-line-tree';
 import transmutation from './transmutation';
-import regularPolygon from 'regular-polygon';
-import { start } from 'repl';
 
 // Transmutations
 import inscribe from './transmutations/inscribe';

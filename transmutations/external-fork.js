@@ -48,7 +48,7 @@ module.exports = function fork(continuation) {
       forking_rendering,
       interior_polygon
     ];
-  }
+  };
 
   const getForks = function() {
     return forking_points.map(pos => {
@@ -77,5 +77,5 @@ module.exports = function fork(continuation) {
     rendering : getRendering(),
     forks     : getForks(),
     interior  : getInterior()
-  }
+  };
 };

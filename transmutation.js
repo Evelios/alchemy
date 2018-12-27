@@ -39,8 +39,8 @@ module.exports = (function () {
       interior  : starting_polygon,
       rendering : [],
       forks     : [],
-    }
-  }
+    };
+  };
 
   self.transmute = function(starting_node) {
     let transmutation_locations = [starting_node.interior];
@@ -71,7 +71,7 @@ module.exports = (function () {
     }
 
     return output_renderings;
-  }
+  };
 
   // ---- Filtering Functions --------------------------------------------------
 
@@ -81,7 +81,7 @@ module.exports = (function () {
 
   self.isInteriorContinuation = function(transmutation) {
     return transmutation.interior && transmutation.interior.radius > opts.min_size;
-  }
+  };
 
   // ---- Algorithm Selection --------------------------------------------------
 
@@ -89,7 +89,6 @@ module.exports = (function () {
     switch (opts.algorithm_selection) {
       case 'random':
         return self.getRandomAlgorithm();
-        break;
 
       default:
         throw new Error(`Value Error : Invalid Algorithm Selection Value ${opts.algorithm_selection}`);
@@ -99,7 +98,7 @@ module.exports = (function () {
   self.getRandomAlgorithm = function() {
     const randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
     return opts.algorithms[randInt(0, opts.algorithms.length - 1)];
-  }
+  };
 
   return self.main;
 })();

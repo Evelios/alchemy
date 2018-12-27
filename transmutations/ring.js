@@ -45,7 +45,7 @@ module.exports = function(continuation, strength=0.5) {
       polyStrokes(internal_poly),
       spokes
     ];
-  }
+  };
 
   const getForks = function() {
     return null;

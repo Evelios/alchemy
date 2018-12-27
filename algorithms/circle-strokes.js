@@ -6,7 +6,7 @@ module.exports = function(circle) {
   let strokes = regularPolygon(
     N_CIRCLE_SIDES,
     circle.center,
-    circle.radius,
+    circle.radius
   );
 
   strokes.push(strokes[0]);

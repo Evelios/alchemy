@@ -2,7 +2,7 @@ const Vector = require('vector');
 const regularPolygon = require('regular-polygon');
 
 module.exports = function inscribe(continuation) {
-  const nsides = continuation.nsides
+  const nsides = continuation.nsides;
   const inset_radius = continuation.radius * Math.cos(Math.PI / nsides);
   const inset_rotation = continuation.rotation + Math.PI / nsides;
 

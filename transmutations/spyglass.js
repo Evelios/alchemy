@@ -42,7 +42,7 @@ module.exports = function(continuation, strength=0.5) {
     return array(continuation.nsides).map((_, i) => {
       return [ external_endpoints[i], internal_endpoints[i] ];
     }); 
-  }
+  };
 
   const getRendering = function() {
     return [
@@ -74,5 +74,5 @@ module.exports = function(continuation, strength=0.5) {
     rendering : getRendering(), 
     forks     : getForks(),
     interior  : getInterior()
-  }
+  };
 };
