@@ -26,6 +26,9 @@ export default function createPlot (context, dimensions) {
   const max_size = working_width;
   const min_size = 1;
   const nsides = 5;
+  const max_line_width = 0.1;
+  const min_line_width = 0.025;
+  const pen_width = 0.025;
 
   const algorithms = [
     Inset,
@@ -43,6 +46,9 @@ export default function createPlot (context, dimensions) {
     min_size,
     algorithms,
     nsides,
+    max_line_width,
+    min_line_width,
+    pen_width
   });
 
   // Clip all the lines to a margin
@@ -59,6 +65,7 @@ export default function createPlot (context, dimensions) {
   };
 
   function draw () {
+    context.lineWidth = pen_width;
     lines.forEach(points => {
       context.beginPath();
       points.forEach(p => context.lineTo(p[0], p[1]));
@@ -68,7 +75,8 @@ export default function createPlot (context, dimensions) {
 
   function print () {
     return polylinesToSVG(lines, {
-      dimensions
+      dimensions,
+      lineWidth : pen_width
     });
   }
 }

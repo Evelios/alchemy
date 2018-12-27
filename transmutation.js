@@ -10,7 +10,7 @@ module.exports = (function () {
     const starting_poly = self.getStartingPoly();
     self.root = self.transmute(null, starting_poly);
 
-    return transmutationRenderings(self.root);
+    return transmutationRenderings(self.root, self.opts);
   };
 
   self.parseOptions = function(options) {
@@ -23,6 +23,9 @@ module.exports = (function () {
       algorithm_selection : 'random',
       nsides              : 6,
       rotation            : 0,
+      max_line_width      : undefined, 
+      min_line_width      : undefined, 
+      pen_width           : undefined, 
     };
 
     return defaultOpts(options, defaults);

@@ -3,7 +3,7 @@ module.exports = (function() {
     this.parent = parent || null;
     this.parent_poly = parent_poly;
     this.children = [];
-    this.depth = this.patent ? this.parent.depth : 0;
+    this.depth = this.parent ? this.parent.depth + 1 : 0;
   }
 
   TransmutationBase.prototype.addChild = function(child) {

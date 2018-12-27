@@ -19,12 +19,7 @@ module.exports = (function() {
   };
 
   Inset.prototype.getRendering = function() {
-    return [polyStrokes({
-      center   : this.parent_poly.center,
-      nsides   : this.parent_poly.nsides,
-      rotation : this.parent_poly.rotation,
-      radius   : this.inset_radius
-    })];
+    return [polyStrokes(this.getInterior)];
   };
 
   return Inset;
