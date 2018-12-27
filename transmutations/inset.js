@@ -1,25 +1,31 @@
-const Vector = require('vector');
-const regularPolygon = require('regular-polygon');
+const polyStrokes = require('../algorithms/poly-strokes');
+const Base = require('./transmutation-base');
 
-module.exports = function inset(continuation, strength=0.75) {
-  const inset_radius = strength * continuation.radius;
+module.exports = (function() {
+  function Inset(parent, parent_poly, strength=0.75) {
+    Base.call(this, parent, parent_poly);
 
-  let output_polygon = regularPolygon(
-    continuation.nsides,
-    continuation.center,
-    inset_radius,
-    continuation.rotation
-  );
-  output_polygon.push(output_polygon[0]);
+    this.inset_radius = strength * this.parent_poly.radius;
+  }
+  Inset.prototype = Object.create(Base.prototype);
 
-  return {
-    rendering : output_polygon,
-    forks     : [],
-    interior  : {
-      center   : continuation.center,
-      radius   : inset_radius,
-      nsides   : continuation.nsides,
-      rotation : continuation.rotation
-    }
+  Inset.prototype.getInterior = function() {
+    return {
+      center   : this.parent_poly.center,
+      nsides   : this.parent_poly.nsides,
+      radius   : this.inset_radius,
+      rotation : this.parent_poly.rotation
+    };
   };
-};
+
+  Inset.prototype.getRendering = function() {
+    return [polyStrokes({
+      center   : this.parent_poly.center,
+      nsides   : this.parent_poly.nsides,
+      radius   : this.inset_radius,
+      rotation : this.parent_poly.rotation,
+    })];
+  };
+
+  return Inset;
+})();

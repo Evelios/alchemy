@@ -6,11 +6,12 @@ import flattenLineTree from 'flatten-line-tree';
 import transmutation from './transmutation';
 
 // Transmutations
-import inscribe from './transmutations/inscribe';
-import internalFork from './transmutations/internal-fork';
-import externalFork from './transmutations/external-fork';
-import ring from './transmutations/ring';
-import spyglass from './transmutations/spyglass';
+import Inset from './transmutations/inset';
+import Inscribe from './transmutations/inscribe';
+import InternalFork from './transmutations/internal-fork';
+import ExternalFork from './transmutations/external-fork';
+import Ring from './transmutations/ring';
+import Spyglass from './transmutations/spyglass';
 
 export const orientation = Orientation.LANDSCAPE;
 export const dimensions = PaperSize.LETTER;
@@ -26,11 +27,12 @@ export default function createPlot (context, dimensions) {
   const min_size = 1;
 
   const algorithms = [
-    inscribe,
-    internalFork,
-    externalFork,
-    ring,
-    spyglass,
+    Inset,
+    // Inscribe,
+    // InternalFork,
+    // ExternalFork,
+    // Ring,
+    // Spyglass,
   ];
 
   let lines = transmutation({

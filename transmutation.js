@@ -1,15 +1,16 @@
 const defaultOpts = require('default-options');
+const transmutationRenderings = require('./algorithms/transmutation-renderings');
 
 module.exports = (function () {
   let self = {};
-  let opts;
-  let depth = 1;
 
   self.main = function(options) {
-    opts = self.parseOptions(options);
+    self.opts = self.parseOptions(options);
 
-    const node = self.getStartingNode();
-    return self.transmute(node);
+    const starting_poly = self.getStartingPoly();
+    self.root = self.transmute(null, starting_poly);
+
+    return transmutationRenderings(self.root);
   };
 
   self.parseOptions = function(options) {
@@ -27,77 +28,62 @@ module.exports = (function () {
     return defaultOpts(options, defaults);
   };
 
-  self.getStartingNode = function() {
-    const starting_polygon = {
-      center   : opts.center,
-      radius   : opts.starting_size,
-      nsides   : opts.nsides,
-      rotation : opts.rotation,
-    };
-
+  self.getStartingPoly = function() {
     return {
-      interior  : starting_polygon,
-      rendering : [],
-      forks     : [],
+      center   : self.opts.center,
+      radius   : self.opts.starting_size,
+      nsides   : self.opts.nsides,
+      rotation : self.opts.rotation,
     };
   };
 
-  self.transmute = function(starting_node) {
-    let transmutation_locations = [starting_node.interior];
-    let output_renderings = [];
+  self.transmute = function(parent, polygon) {
+    const next_algorithm = self.getNextAlgorithm();
+    const current_transmutation = new next_algorithm(parent, polygon);
 
-    while (transmutation_locations.length > 0) {
+    const interior = current_transmutation.getInterior();
+    if (self.isInteriorContinuation(interior)) {
+      const child = self.transmute(current_transmutation, interior);
+      current_transmutation.addChild(child);
+    }
 
-      // Run the next algorithm
-      const current_transmutation = transmutation_locations.pop();
-      const transmutation_algorithm = self.getNextAlgorithm();
-      const output_transmutation = transmutation_algorithm(current_transmutation);
-
-      // Add the output to the tracking arrays
-      output_renderings.push(output_transmutation.rendering);
-
-      // Add the interior continuations
-      if (self.isInteriorContinuation(output_transmutation)) {
-        transmutation_locations.push(output_transmutation.interior);
-      }
-
-      // Add the forking continuations
-      if (self.isForkingContinuation(output_transmutation)) {
-        const continuations = output_transmutation.forks.filter(c => c.radius > opts.min_size);
-        if (continuations.length > 0) {
-          transmutation_locations.push(...continuations);
-        }
+    const forks = current_transmutation.getForks();
+    if (self.isForkingContinuation(forks)) {
+      const continuations = forks.filter(c => c.radius > self.opts.min_size);
+      for (const continuation_poly of continuations) {
+        const child = self.transmute(current_transmutation, continuation_poly);
+        current_transmutation.addChild(child);
       }
     }
 
-    return output_renderings;
+    return current_transmutation;
   };
 
   // ---- Filtering Functions --------------------------------------------------
 
-  self.isForkingContinuation = function(transmutation) {
-    return transmutation.forks && transmutation.forks.length > 0;
+  self.isInteriorContinuation = function(interior) {
+    return interior && interior.radius > self.opts.min_size;
   };
 
-  self.isInteriorContinuation = function(transmutation) {
-    return transmutation.interior && transmutation.interior.radius > opts.min_size;
+  self.isForkingContinuation = function(forks) {
+    return forks && forks.length > 0;
   };
 
   // ---- Algorithm Selection --------------------------------------------------
 
   self.getNextAlgorithm = function() {
-    switch (opts.algorithm_selection) {
+    switch (self.opts.algorithm_selection) {
       case 'random':
         return self.getRandomAlgorithm();
 
       default:
-        throw new Error(`Value Error : Invalid Algorithm Selection Value ${opts.algorithm_selection}`);
+        throw new Error(`Value Error : Invalid Algorithm Selection Value ${self.opts.algorithm_selection}`);
     }
   };
 
   self.getRandomAlgorithm = function() {
     const randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
-    return opts.algorithms[randInt(0, opts.algorithms.length - 1)];
+    return self.opts.algorithms[randInt(0, self.opts.algorithms.length - 1)];
   };
 
   return self.main;
