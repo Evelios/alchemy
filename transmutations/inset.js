@@ -13,8 +13,8 @@ module.exports = (function() {
     return {
       center   : this.parent_poly.center,
       nsides   : this.parent_poly.nsides,
-      radius   : this.inset_radius,
-      rotation : this.parent_poly.rotation
+      rotation : this.parent_poly.rotation,
+      radius   : this.inset_radius
     };
   };
 
@@ -22,8 +22,8 @@ module.exports = (function() {
     return [polyStrokes({
       center   : this.parent_poly.center,
       nsides   : this.parent_poly.nsides,
-      radius   : this.inset_radius,
       rotation : this.parent_poly.rotation,
+      radius   : this.inset_radius
     })];
   };
 

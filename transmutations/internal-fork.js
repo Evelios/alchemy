@@ -1,47 +1,64 @@
 const Vector = require('vector');
-const regularPolygon = require('regular-polygon');
-const NewArray = require('new-array');
+const array = require('new-array');
+const circleStrokes = require('../algorithms/circle-strokes');
 
-module.exports = function internalFork(continuation, strength=1/continuation.nsides) {
-  const N_CIRCLE_SIDES = 300;
-  const fork_radius = continuation.radius * strength;
-  const internal_radius = continuation.radius - 2 * fork_radius;
+const Base = require('./transmutation-base');
 
-  const nsides = continuation.nsides;
+module.exports = (function() {
+  function InternalFork(parent, parent_poly, strength=1/parent_poly.nsides) {
+    Base.call(this, parent, parent_poly);
 
-  const forking_points = NewArray(nsides).map((_, i) => {
-    const rotation = continuation.rotation + i * 2*Math.PI / nsides;
-    return Vector.offset(continuation.center, continuation.radius - fork_radius, rotation);
-  });
+    this.fork_radius = this.parent_poly.radius * strength;
+    this.internal_radius = this.parent_poly.radius - 2 * this.fork_radius;
 
-  const getRendering = function() {
+    this.forking_points = array(this.parent_poly.nsides).map((_, i) => {
+      const rotation = this.parent_poly.rotation + i * 2*Math.PI / this.parent_poly.nsides;
+      const offset_distance = this.parent_poly.radius - this.fork_radius;
+      return Vector.offset(this.parent_poly.center, offset_distance, rotation);
+    });
+  }
+  InternalFork.prototype = Object.create(Base.prototype);
 
-    let outer_circle = regularPolygon(
-      N_CIRCLE_SIDES,
-      continuation.center,
-      continuation.radius,
-      0
-    );
-    outer_circle.push(outer_circle[0]);
+  InternalFork.prototype.getInterior = function() {
+    const interior_rotation = this.parent_poly.rotation + Math.PI / this.parent_poly.nsides;
 
-    const forking_rendering = forking_points.map(pos => {
-      let circle = regularPolygon(
-        N_CIRCLE_SIDES,
-        pos,
-        fork_radius,
-        0
-      );
-      circle.push(circle[0]);
-      return circle;
+    return {
+      center   : this.parent_poly.center,
+      radius   : this.internal_radius,
+      nsides   : this.parent_poly.nsides,
+      rotation : interior_rotation
+    };
+  };
+
+  InternalFork.prototype.getForks = function() {
+    return this.forking_points.map(pos => {
+      return {
+        center   : pos,
+        radius   : this.fork_radius,
+        nsides   : this.parent_poly.nsides,
+        rotation : this.parent_poly.rotation,
+      };
+    });
+  };
+
+  InternalFork.prototype.getRendering = function() {
+
+   let outer_circle = circleStrokes({
+      center : this.parent_poly.center,
+      radius : this.parent_poly.radius
+   });
+
+    const forking_rendering = this.forking_points.map(pos => {
+      return circleStrokes({
+        center : pos,
+        radius : this.fork_radius
+      });
     });
 
-    let interior_circle = regularPolygon(
-      N_CIRCLE_SIDES,
-      continuation.center,
-      internal_radius,
-      0
-    );
-    interior_circle.push(interior_circle[0]);
+    const interior_circle = circleStrokes({
+      center : this.parent_poly.center,
+      radius : this.internal_radius
+    });
 
     return [
       outer_circle,
@@ -50,32 +67,5 @@ module.exports = function internalFork(continuation, strength=1/continuation.nsi
     ];
   };
 
-  const getForks = function() {
-    return forking_points.map(pos => {
-      return {
-        center   : pos,
-        radius   : fork_radius,
-        nsides   : nsides,
-        rotation : 0,
-      };
-    });
-  };
-
-  const getInterior = function() {
-    const interior_radius = continuation.radius * Math.cos(Math.PI / nsides);
-    const interior_rotation = continuation.rotation + Math.PI / nsides;
-
-    return {
-      center   : continuation.center,
-      radius   : internal_radius,
-      nsides   : nsides,
-      rotation : interior_rotation
-    };
-  };
-
-  return {
-    rendering : getRendering(), 
-    forks     : getForks(),
-    interior  : getInterior()
-  };
-};
+  return InternalFork;
+})();

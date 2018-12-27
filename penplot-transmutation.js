@@ -25,14 +25,15 @@ export default function createPlot (context, dimensions) {
   const starting_size = 7;
   const max_size = working_width;
   const min_size = 1;
+  const nsides = 5;
 
   const algorithms = [
     Inset,
-    // Inscribe,
-    // InternalFork,
-    // ExternalFork,
-    // Ring,
-    // Spyglass,
+    Inscribe,
+    InternalFork,
+    ExternalFork,
+    Ring,
+    Spyglass,
   ];
 
   let lines = transmutation({
@@ -41,6 +42,7 @@ export default function createPlot (context, dimensions) {
     max_size,
     min_size,
     algorithms,
+    nsides,
   });
 
   // Clip all the lines to a margin

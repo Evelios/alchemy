@@ -82,7 +82,7 @@ module.exports = (function () {
   };
 
   self.getRandomAlgorithm = function() {
-    const randInt = (min, max) => min + Math.ceil(Math.random() * (max -  min));
+    const randInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
     return self.opts.algorithms[randInt(0, self.opts.algorithms.length - 1)];
   };
 

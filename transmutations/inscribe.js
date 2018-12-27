@@ -1,27 +1,28 @@
-const Vector = require('vector');
-const regularPolygon = require('regular-polygon');
+const polyStrokes = require('../algorithms/poly-strokes');
 
-module.exports = function inscribe(continuation) {
-  const nsides = continuation.nsides;
-  const inset_radius = continuation.radius * Math.cos(Math.PI / nsides);
-  const inset_rotation = continuation.rotation + Math.PI / nsides;
+const Base = require('./transmutation-base');
 
-  let output_polygon = regularPolygon(
-    nsides,
-    continuation.center,
-    continuation.radius,
-    inset_rotation
-  );
-  output_polygon.push(output_polygon[0]);
+module.exports = (function() {
+  function Inscribe(parent, parent_poly) {
+    Base.call(this, parent, parent_poly);
 
-  return {
-    rendering : output_polygon,
-    forks     : [],
-    interior  : {
-      center   : continuation.center,
-      radius   : inset_radius,
-      nsides   : continuation.nsides,
-      rotation : inset_rotation 
-    } 
+    this.inset_radius = this.parent_poly.radius * Math.cos(Math.PI / this.parent_poly.nsides);
+    this.inset_rotation = this.parent_poly.rotation + Math.PI / this.parent_poly.nsides;
+  }
+  Inscribe.prototype = Object.create(Base.prototype);
+
+  Inscribe.prototype.getInterior = function() {
+    return  {
+      center   : this.parent_poly.center,
+      nsides   : this.parent_poly.nsides,
+      radius   : this.inset_radius,
+      rotation : this.inset_rotation
+    };
   };
-};
+
+  Inscribe.prototype.getRendering = function() {
+    return [ polyStrokes(this.parent_poly) ];
+  };
+
+  return Inscribe;
+})();

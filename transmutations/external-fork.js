@@ -1,47 +1,59 @@
 const Vector = require('vector');
-const regularPolygon = require('regular-polygon');
-const NewArray = require('new-array');
-const inscribePolygon = require('../algorithms/inscribe-polygon.js');
+const array = require('new-array');
+const circleStrokes = require('../algorithms/circle-strokes');
+const polyStrokes = require('../algorithms/poly-strokes');
 
-module.exports = function fork(continuation) {
-  const N_CIRCLE_SIDES = 300;
-  const fork_radius = continuation.radius / 4;
+const Base = require('./transmutation-base');
 
-  const nsides = continuation.nsides;
+module.exports = (function() {
+  function ExternalFork(parent, parent_poly, strength=0.25) {
+    Base.call(this, parent, parent_poly);
 
-  const forking_points = NewArray(nsides).map((_, i) => {
-    const rotation = continuation.rotation + i * 2*Math.PI / nsides;
-    return Vector.offset(continuation.center, continuation.radius, rotation);
+  this.fork_radius = this.parent_poly.radius * strength;
+  this.forking_points = array(this.parent_poly.nsides).map((_, i) => {
+    const rotation = this.parent_poly.rotation + i * 2*Math.PI / this.parent_poly.nsides;
+    return Vector.offset(this.parent_poly.center, this.parent_poly.radius, rotation);
   });
+  }
+  ExternalFork.prototype = Object.create(Base.prototype);
 
-  const getRendering = function() {
+  ExternalFork.prototype.getForks = function() {
+    return this.forking_points.map(pos => {
+      return {
+        center   : pos,
+        radius   : this.fork_radius,
+        nsides   : this.parent_poly.nsides,
+        rotation : 0,
+      };
+    });
+  };
 
-    let outer_circle = regularPolygon(
-      N_CIRCLE_SIDES,
-      continuation.center,
-      continuation.radius,
-      continuation.rotation
-    );
-    outer_circle.push(outer_circle[0]);
+  ExternalFork.prototype.getInterior = function() {
+    const interior_radius = this.parent_poly.radius * Math.cos(Math.PI / this.parent_poly.nsides);
+    const interior_rotation = this.parent_poly.rotation + Math.PI / this.parent_poly.nsides;
 
-    const forking_rendering = forking_points.map(pos => {
-      let circle = regularPolygon(
-        N_CIRCLE_SIDES,
-        pos,
-        fork_radius,
-        continuation.rotation
-      );
-      circle.push(circle[0]);
-      return circle;
+    return {
+      center   : this.parent_poly.center,
+      nsides   : this.parent_poly.nsides,
+      radius   : interior_radius,
+      rotation : interior_rotation
+    };
+  };
+
+  ExternalFork.prototype.getRendering = function() {
+    const outer_circle = circleStrokes({
+      center : this.parent_poly.center,
+      radius : this.parent_poly.radius
     });
 
-    let interior_polygon = regularPolygon(
-      nsides,
-      continuation.center,
-      continuation.radius,
-      continuation.rotation
-    );
-    interior_polygon.push(interior_polygon[0]);
+    const forking_rendering = this.forking_points.map(pos => {
+      return circleStrokes({
+        center : pos,
+        radius : this.fork_radius,
+      });
+    });
+
+    const interior_polygon = polyStrokes(this.parent_poly);
 
     return [
       outer_circle,
@@ -50,32 +62,5 @@ module.exports = function fork(continuation) {
     ];
   };
 
-  const getForks = function() {
-    return forking_points.map(pos => {
-      return {
-        center   : pos,
-        radius   : fork_radius,
-        nsides   : nsides,
-        rotation : 0,
-      };
-    });
-  };
-
-  const getInterior = function() {
-    const interior_radius = continuation.radius * Math.cos(Math.PI / nsides);
-    const interior_rotation = continuation.rotation + Math.PI / continuation.nsides;
-
-    return {
-      center   : continuation.center,
-      radius   : interior_radius,
-      nsides   : nsides,
-      rotation : interior_rotation
-    };
-  };
-
-  return {
-    rendering : getRendering(),
-    forks     : getForks(),
-    interior  : getInterior()
-  };
-};
+  return ExternalFork;
+})();

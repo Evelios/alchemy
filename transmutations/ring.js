@@ -1,63 +1,63 @@
 const polyEndpoints = require('../algorithms/polygon-endpoints');
 const polyMidpoints = require('../algorithms/polygon-midpoints');
-const circleStrokes = require('../algorithms/circle-strokes');
 const polyStrokes = require('../algorithms/poly-strokes');
 const inscribePolygon = require('../algorithms/inscribe-polygon');
 const array = require('new-array');
 
+const Base = require('./transmutation-base');
 
-module.exports = function(continuation, strength=0.5) {
-  const use_endpoints = Math.random() > 0.5;
-  const rotate_internal = Math.random() > 0.5;
+module.exports = (function() {
+  function Ring(parent, parent_poly, strength=0.5) {
+    Base.call(this, parent, parent_poly);
 
-  const nsides = continuation.nsides;
-  const internal_radius = continuation.radius * strength;
+    this.strength = strength;
+    this.use_endpoints = Math.random() > 0.5;
+    this.rotate_internal = Math.random() > 0.5;
+    this.internal_poly = this.getInternalPoly();
 
-  const offset = Math.PI / continuation.nsides * (use_endpoints ? -1 : 1)
+    this.outer_connections = this.use_endpoints
+      ? polyEndpoints(this.parent_poly)
+      : polyMidpoints(this.parent_poly);
 
-  const internal_rotation = rotate_internal
-    ? continuation.rotation + offset 
-    : continuation.rotation;
-
-  const internal_poly = {
-    center : continuation.center,
-    radius : internal_radius,
-    nsides : nsides,
-    rotation : internal_rotation
+    this.inner_connections = 
+      (this.use_endpoints && this.rotate_internal) ||
+      (!this.use_endpoints && !this.rotate_internal)
+        ? polyMidpoints(this.internal_poly)
+        : polyEndpoints(this.internal_poly);
   }
+  Ring.prototype = Object.create(Base.prototype);
 
-  const outer_connections = use_endpoints
-    ? polyEndpoints(continuation)
-    : polyMidpoints(continuation);
+  Ring.prototype.getInternalPoly = function() {
+    const internal_radius = this.parent_poly.radius * this.strength;
 
-  const inner_connections = 
-    (use_endpoints && rotate_internal) || (!use_endpoints && !rotate_internal)
-      ? polyMidpoints(internal_poly)
-      : polyEndpoints(internal_poly);
+    const offset = Math.PI / this.parent_poly.nsides * (this.use_endpoints ? -1 : 1);
+    const internal_rotation = this.rotate_internal
+      ? this.parent_poly.rotation + offset 
+      : this.parent_poly.rotation;
 
-  const getRendering = function() {
-    const spokes = array(nsides).map((_, i) => {
-      return [ outer_connections[i], inner_connections[i] ];
+    return {
+      center   : this.parent_poly.center,
+      radius   : internal_radius,
+      nsides   : this.parent_poly.nsides,
+      rotation : internal_rotation
+    };
+  };
+
+  Ring.prototype.getRendering = function() {
+    const spokes = array(this.parent_poly.nsides).map((_, i) => {
+      return [ this.outer_connections[i], this.inner_connections[i] ];
     });
 
     return [
-      polyStrokes(continuation),
-      polyStrokes(internal_poly),
+      polyStrokes(this.parent_poly),
+      polyStrokes(this.internal_poly),
       spokes
     ];
   };
 
-  const getForks = function() {
-    return null;
+  Ring.prototype.getInterior = function() {
+    return inscribePolygon(this.internal_poly);
   };
 
-  const getInterior = function() {
-    return inscribePolygon(internal_poly);
-  };
-
-  return {
-    rendering : getRendering(), 
-    forks     : getForks(),
-    interior  : getInterior()
-  }
-};
+  return Ring;
+})();
