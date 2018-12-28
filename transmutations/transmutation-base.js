@@ -1,3 +1,5 @@
+const polyStrokes = require('../algorithms/poly-strokes');
+
 module.exports = (function() {
   function TransmutationBase(parent, parent_poly) {
   /**
@@ -20,6 +22,15 @@ module.exports = (function() {
    * @param {TransmutationBase} child The child transmutation to add
    */
     this.children.push(child);
+  };
+
+  TransmutationBase.prototype.hasChildren = function() {
+  /**
+   * If the current transmutation node has any children nodes
+   * 
+   * @returns {boolean}
+   */
+    return this.children.length > 0;
   };
 
   TransmutationBase.prototype.getInterior = function() {
@@ -53,19 +64,20 @@ module.exports = (function() {
     throw Error('Function Not Implemented : getRendering');
   };
 
-  TransmutationBase.prototype.getClippingPolygon = function() {
+  TransmutationBase.prototype.getClipping = function() {
   /**
    * The polygon that is used for clipping the parent drawings. This must be in
-   * the stroke format
+   * the stroke format. If the algorithm returns `null` then no clipping will be
+   * performed.
    * 
    * The format is described by the GeoJSON format from
    * https://tools.ietf.org/html/rfc7946#section-3.1
    * which is used because of the package for polygon clipping
    * https://www.npmjs.com/package/polygon-clipping
    * 
-   * @returns {Stroke[[]]}
+   * @returns {Stroke[[]]|null}
    */
-    return null;
+    return [ polyStrokes(this.parent_poly) ];
   };
  
   return TransmutationBase;

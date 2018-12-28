@@ -31,7 +31,7 @@ export default function createPlot (context, dimensions) {
   const pen_width = 0.025;
 
   const algorithms = [
-    Inset,
+    // Inset,
     Inscribe,
     InternalFork,
     ExternalFork,

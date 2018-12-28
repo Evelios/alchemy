@@ -22,5 +22,9 @@ module.exports = (function() {
     return [polyStrokes(this.getInterior)];
   };
 
+  Inset.prototype.getClipping = function() {
+    return this.getRendering();
+  };
+
   return Inset;
 })();
