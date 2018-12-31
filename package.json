@@ -31,6 +31,7 @@
     "flatten-line-tree": "git+https://github.com/Evelios/flatten-line-tree.git",
     "lerp": "^1.0.3",
     "line-intersection": "git+https://github.com/Evelios/line-intersection.git",
+    "line-segment-intersection": "git+https://github.com/Evelios/line-segment-intersection.git",
     "new-array": "^1.0.0",
     "optimize-paths": "git+https://github.com/Evelios/optimize-path.git",
     "penplot": "^3.0.0",
