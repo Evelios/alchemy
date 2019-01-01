@@ -22,8 +22,8 @@ module.exports = (function() {
     return [polyStrokes(this.getInterior)];
   };
 
-  Inset.prototype.getClipping = function() {
-    return this.getRendering();
+  Inset.prototype.getClippng = function() {
+    return this.getInterior();
   };
 
   return Inset;

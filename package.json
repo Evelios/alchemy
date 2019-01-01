@@ -36,7 +36,6 @@
     "optimize-paths": "git+https://github.com/Evelios/optimize-path.git",
     "penplot": "^3.0.0",
     "penplot-stroke": "git+https://github.com/Evelios/penplot-stroke.git",
-    "polygon-clipping": "^0.9.2",
     "rand": "0.0.4",
     "regular-polygon": "git+https://github.com/Evelios/regular-polygon.git",
     "tape": "^4.9.1",

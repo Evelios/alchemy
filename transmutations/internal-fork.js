@@ -67,5 +67,12 @@ module.exports = (function() {
     ];
   };
 
+  InternalFork.prototype.getClipping = function() {
+    return {
+      center : this.parent_poly.center,
+      radius : this.parent_poly.radius
+    }
+  };
+
   return InternalFork;
 })();

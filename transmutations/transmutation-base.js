@@ -9,9 +9,11 @@ module.exports = (function() {
    *   the base that is used to create the current transmutation
    */
     this.parent = parent || null;
-    this.parent_poly = parent_poly;
-    this.children = [];
     this.depth = this.parent ? this.parent.depth + 1 : 0;
+    this.children = [];
+
+    this.parent_poly = parent_poly;
+    this.parent_poly.radius -= 100 * Number.EPSILON; 
   }
 
   TransmutationBase.prototype.addChild = function(child) {
@@ -70,14 +72,9 @@ module.exports = (function() {
    * the stroke format. If the algorithm returns `null` then no clipping will be
    * performed.
    * 
-   * The format is described by the GeoJSON format from
-   * https://tools.ietf.org/html/rfc7946#section-3.1
-   * which is used because of the package for polygon clipping
-   * https://www.npmjs.com/package/polygon-clipping
-   * 
-   * @returns {Stroke[[]]|null}
+   * @returns {Polygon|Circle|null}
    */
-    return [ polyStrokes(this.parent_poly) ];
+    return this.parent_poly;
   };
  
   return TransmutationBase;

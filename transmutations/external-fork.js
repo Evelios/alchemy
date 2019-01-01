@@ -61,6 +61,13 @@ module.exports = (function() {
       interior_polygon
     ];
   };
+  
+  ExternalFork.prototype.getClipping = function() {
+    return {
+      center : this.parent_poly.center,
+      radius : this.parent_poly.radius
+    };
+  };
 
   return ExternalFork;
 })();

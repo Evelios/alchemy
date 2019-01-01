@@ -1,7 +1,8 @@
 const flattenLineTree = require('flatten-line-tree');
-const polygonClipping = require('polygon-clipping');
 const createStroke = require('penplot-stroke');
 const lerp = require('lerp');
+
+const clipLineFromPolys = require('./clip-line-from-polys');
 
 module.exports = (function() {
   let self = {};
@@ -23,10 +24,11 @@ module.exports = (function() {
     let lines = flattenLineTree(node.getRendering());
 
     if (clipping_polys.length > 0) {
-        // lines = lines.map(line => polygonClipping.difference(line, ...clipping_polys));
+      lines = lines.map(line =>
+        clipLineFromPolys(line, ...clipping_polys));
     }
 
-    const strokes = lines.map(line =>
+    const strokes = flattenLineTree(lines).map(line =>
       createStroke(line, line_width, self.opts.pen_width)
     );
     let renderings = [strokes];
@@ -55,23 +57,12 @@ module.exports = (function() {
       return node.children.concat(
         has_grandchildren.reduce((acc, child) => {
           return acc.concat(self.getAllChildren(child));
-        }, []) 
+        }, [])
       );
     }
     else {
       return node.children;
     }
-
-
-    // if (children.length > 0) {
-    //   const grandchildren = children.map(child => self.getAllChildren(child));
-    //   if (grandchildren.length > 0) {
-    //     return children.concat(grandchildren);
-    //   }
-    //   else {
-    //     return children;
-    //   }
-    // }
   };
 
   self.getLeafNodes = function(node) {
