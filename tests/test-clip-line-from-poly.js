@@ -141,3 +141,46 @@ test('All Cases', t => {
   deepAlmostEqual(t, polyClip, expected, 'Polygon Clipping');
   t.end();
 });
+
+test('Multiple Polygons', t => {
+  const poly2 = {
+    center   : [5, 1],
+    nsides   : 4,
+    radius   : Math.sqrt(2),
+    rotation : Math.PI / 4
+  };
+
+  const circle2 = {
+    center : [5, 1],
+    radius : 1
+  };
+
+  const line = [
+    [-1, 1],
+    [ 1, 1],
+    [ 3, 1],
+    [ 7, 1]
+  ];
+
+  const expected = [
+    [
+      [-1, 1],
+      [ 0, 1]
+    ],
+    [
+      [ 2, 1],
+      [ 3, 1],
+      [ 4, 1]
+    ],
+    [
+      [ 6, 1],
+      [ 7, 1]
+    ]
+  ];
+
+  const polyClip = clipLineFromPoly(line, poly, poly2);
+  // const circleClip = clipLineFromPoly(line, circle, circle2);
+
+  deepAlmostEqual(t, polyClip, expected, 'Polygon Clipping');
+  t.end();
+});

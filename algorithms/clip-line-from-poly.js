@@ -1,4 +1,5 @@
 const segmentIntersection = require('line-segment-intersection');
+const flattenLineTree = require('flatten-line-tree');
 const array = require('new-array');
 const Vector = require('vector');
 
@@ -8,6 +9,14 @@ const polyEndpoints = require('./polygon-endpoints');
 
 module.exports = (function() {
   let self = {};
+
+  self.clipLineFromPolygons = function(stroke, ...polys) {
+    return polys.reduce((strokes, poly) => {
+      return flattenLineTree(strokes.map(stroke => {
+        return self.clipLineFromPoly(stroke, poly);
+      }));
+    }, [stroke]);
+  };
 
   self.clipLineFromPoly = function(stroke, poly) {
   /**
@@ -53,7 +62,7 @@ module.exports = (function() {
     if (current_stroke.length > 0) {
       out_strokes.push(current_stroke);
     }
-
+    
     return out_strokes;
   };
 
@@ -126,5 +135,5 @@ module.exports = (function() {
     return Vector.distance(point, circle.center) < circle.radius;
   }
 
-  return self.clipLineFromPoly;
+  return self.clipLineFromPolygons;
 })();
