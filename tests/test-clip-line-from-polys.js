@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const clipLineFromPoly = require('../algorithms/clip-line-from-polys.js');
 const test = require('tape');
 

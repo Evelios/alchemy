@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const Transmutation = require('../transmutation');
 const test = require('tape');
 const TestUtils = require('./test-utils');

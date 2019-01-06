@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const test = require('tape');
 const regularPolygon = require('regular-polygon');
 const AlchemyAlgorithms = require('../alchemy-bundle');
