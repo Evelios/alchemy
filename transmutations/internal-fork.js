@@ -5,10 +5,12 @@ const circleStrokes = require('../algorithms/circle-strokes');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function InternalFork(parent, parent_poly, strength=1/parent_poly.nsides) {
-    Base.call(this, parent, parent_poly);
+  function InternalFork(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options, {
+      strength : 1 / parent_poly.nsides
+    });
 
-    this.fork_radius = this.parent_poly.radius * strength;
+    this.fork_radius = this.parent_poly.radius * this.opts.strength;
     this.internal_radius = this.parent_poly.radius - 2 * this.fork_radius;
 
     this.forking_points = array(this.parent_poly.nsides).map((_, i) => {

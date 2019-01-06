@@ -7,12 +7,13 @@ const array = require('new-array');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function Ring(parent, parent_poly, strength=0.5) {
-    Base.call(this, parent, parent_poly);
+  function Ring(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options, {
+      strength : 0.5  
+    });
 
-    this.strength = strength;
-    this.use_endpoints = Math.random() > 0.5;
-    this.rotate_internal = Math.random() > 0.5;
+    this.use_endpoints = this.opts.rng() > 0.5;
+    this.rotate_internal = this.opts.rng() > 0.5;
     this.internal_poly = this.getInternalPoly();
 
     this.outer_connections = this.use_endpoints
@@ -28,7 +29,7 @@ module.exports = (function() {
   Ring.prototype = Object.create(Base.prototype);
 
   Ring.prototype.getInternalPoly = function() {
-    const internal_radius = this.parent_poly.radius * this.strength;
+    const internal_radius = this.parent_poly.radius * this.opts.strength;
 
     const offset = Math.PI / this.parent_poly.nsides * (this.use_endpoints ? -1 : 1);
     const internal_rotation = this.rotate_internal

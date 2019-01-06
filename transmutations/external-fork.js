@@ -6,11 +6,13 @@ const polyStrokes = require('../algorithms/poly-strokes');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function ExternalFork(parent, parent_poly, strength=0.25) {
-    Base.call(this, parent, parent_poly);
+  function ExternalFork(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options, {
+      strength : 0.25 
+    });
 
-  this.fork_radius = this.parent_poly.radius * strength;
-  this.forking_points = array(this.parent_poly.nsides).map((_, i) => {
+    this.fork_radius = this.parent_poly.radius * this.opts.strength;
+    this.forking_points = array(this.parent_poly.nsides).map((_, i) => {
     const rotation = this.parent_poly.rotation + i * 2*Math.PI / this.parent_poly.nsides;
     return Vector.offset(this.parent_poly.center, this.parent_poly.radius, rotation);
   });

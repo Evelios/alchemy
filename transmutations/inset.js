@@ -2,10 +2,12 @@ const polyStrokes = require('../algorithms/poly-strokes');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function Inset(parent, parent_poly, strength=0.75) {
-    Base.call(this, parent, parent_poly);
+  function Inset(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options, {
+      strength : 0.75
+    });
 
-    this.inset_radius = strength * this.parent_poly.radius;
+    this.inset_radius = this.opts.strength * this.parent_poly.radius;
   }
   Inset.prototype = Object.create(Base.prototype);
 

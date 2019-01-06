@@ -26,7 +26,7 @@ export default function createPlot (context, dimensions) {
   const max_size = working_width;
   const min_size = 1;
   const nsides = 5;
-  const max_line_width = 0.1;
+  const max_line_width = 0.2;
   const min_line_width = 0.025;
   const pen_width = 0.025;
 

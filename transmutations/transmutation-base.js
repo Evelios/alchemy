@@ -1,7 +1,10 @@
 const polyStrokes = require('../algorithms/poly-strokes');
 
+const defaultOpts = require('default-options');
+const Alea = require('alea');
+
 module.exports = (function() {
-  function TransmutationBase(parent, parent_poly) {
+  function TransmutationBase(parent, parent_poly, options, defaults) {
   /**
    * @param {TransmutationBase|null} parent The parent transmutation to the
    *   current transmutation. `null` parent is the root algorithm
@@ -13,7 +16,30 @@ module.exports = (function() {
     this.children = [];
 
     this.parent_poly = parent_poly;
-    this.parent_poly.radius -= 100 * Number.EPSILON; 
+    this.parent_poly.radius -= 100 * Number.EPSILON;
+  
+    this.opts = this.parseOptions(options, defaults);
+    this.child_seed = this.opts.rng();
+  }
+
+  TransmutationBase.prototype.parseOptions = function(options, defaults) {
+    this.defaults = this.mergeDefaults(defaults, {
+      rng : undefined 
+    });
+
+    return defaultOpts(options, this.defaults);
+  };
+
+  TransmutationBase.prototype.mergeDefaults = function(user_defaults, defaults) {
+    let merged_defaults = defaults;
+
+    for (var key in user_defaults) {
+        merged_defaults[key] = user_defaults[key];
+      if (user_defaults.hasOwnProperty(key)) {
+      }
+    }
+
+    return merged_defaults;
   }
 
   TransmutationBase.prototype.addChild = function(child) {
@@ -24,6 +50,10 @@ module.exports = (function() {
    * @param {TransmutationBase} child The child transmutation to add
    */
     this.children.push(child);
+  };
+
+  TransmutationBase.prototype.getChildRng = function(child) {
+    return new Alea(this.child_seed);
   };
 
   TransmutationBase.prototype.hasChildren = function() {

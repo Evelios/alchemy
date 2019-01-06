@@ -9,11 +9,12 @@ const inscribePolygon = require('../algorithms/inscribe-polygon');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function Spyglass(parent, parent_poly, strength=0.5) {
-    Base.call(this, parent, parent_poly);
+  function Spyglass(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options, {
+      strength : 0.5 
+    });
 
-    this.rotate_right = Math.random() > 0.5;
-    this.strength = strength;
+    this.rotate_right = this.opts.rng() > 0.5;
   }
   Spyglass.prototype = Object.create(Base.prototype);
 
@@ -55,7 +56,7 @@ module.exports = (function() {
     // Get the lines that the spyglass will run allong
     const spyglass_lines = polyEndpoints(this.parent_poly).map(pos => {
       const diagonal_angle = Vector.angle(Vector.subtract(this.parent_poly.center, pos));
-      const vector_angle = diagonal_angle + direction * internal_poly_angle * (1 - this.strength);
+      const vector_angle = diagonal_angle + direction * internal_poly_angle * (1 - this.opts.strength);
       return [pos, Vector.offset(pos, 1, vector_angle)];
     });
 

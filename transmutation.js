@@ -1,4 +1,6 @@
 const defaultOpts = require('default-options');
+const Alea = require('alea');
+
 const transmutationRenderings = require('./algorithms/transmutation-renderings');
 
 module.exports = (function () {
@@ -6,6 +8,7 @@ module.exports = (function () {
 
   self.main = function(options) {
     self.opts = self.parseOptions(options);
+    self.rng = new Alea(self.opts.seed);
 
     const starting_poly = self.getStartingPoly();
     self.root = self.transmute(null, starting_poly);
@@ -15,17 +18,24 @@ module.exports = (function () {
 
   self.parseOptions = function(options) {
     const defaults = {
-      center              : undefined,
-      starting_size       : undefined,
+      // Sizing Parameters
       max_size            : undefined,
       min_size            : undefined,
-      algorithms          : undefined,
-      algorithm_selection : 'random',
+      seed                : Math.random(),
+      // Initial Conditions
+      center              : undefined,
+      starting_size       : undefined,
       nsides              : 6,
       rotation            : 0,
-      max_line_width      : undefined, 
-      min_line_width      : undefined, 
-      pen_width           : undefined, 
+      // Options
+      symmetric           : true,
+      // Algorithms
+      algorithms          : undefined,
+      algorithm_selection : 'random',
+      // Rendering Properties
+      max_line_width      : undefined,
+      min_line_width      : undefined,
+      pen_width           : undefined,
     };
 
     return defaultOpts(options, defaults);
@@ -40,27 +50,48 @@ module.exports = (function () {
     };
   };
 
-  self.transmute = function(parent, polygon) {
-    const next_algorithm = self.getNextAlgorithm();
-    const current_transmutation = new next_algorithm(parent, polygon);
+  self.transmute = function(parent, polygon, algorithm) {
+    const next_algorithm = algorithm || self.getNextAlgorithm();
+    const current_transmutation = new next_algorithm(parent, polygon, {
+      rng : parent ? parent.getChildRng() : new Alea(self.rng())
+    });
 
-    const interior = current_transmutation.getInterior();
-    if (self.isInteriorContinuation(interior)) {
-      const child = self.transmute(current_transmutation, interior);
-      current_transmutation.addChild(child);
-    }
-
-    const forks = current_transmutation.getForks();
-    if (self.isForkingContinuation(forks)) {
-      const continuations = forks.filter(c => c.radius > self.opts.min_size);
-      for (const continuation_poly of continuations) {
-        const child = self.transmute(current_transmutation, continuation_poly);
-        current_transmutation.addChild(child);
-      }
-    }
+    self.transmuteInterior(current_transmutation);
+    self.transmuteForks(current_transmutation);
 
     return current_transmutation;
   };
+
+  self.transmuteInterior = function(current_transmutation) {
+    const interior = current_transmutation.getInterior();
+
+    if (!self.isInteriorContinuation(interior)) return;
+
+    const next_algorithm = self.getNextAlgorithm(current_transmutation);
+
+    const child = self.transmute(current_transmutation, interior, next_algorithm);
+    current_transmutation.addChild(child);
+  }
+
+  self.transmuteForks = function(current_transmutation) {
+    const forks = current_transmutation.getForks();
+
+    if (!self.isForkingContinuation(forks)) return;
+
+    const continuations = forks.filter(c => c.radius > self.opts.min_size);
+    const child_algorithm = self.opts.symmetric
+      ? self.getNextAlgorithm(current_transmutation)
+      : undefined;
+
+    for (const continuation_poly of continuations) {
+      const child = self.transmute(
+        current_transmutation,
+        continuation_poly,
+        child_algorithm
+      );
+      current_transmutation.addChild(child);
+    }
+  }
 
   // ---- Filtering Functions --------------------------------------------------
 
@@ -74,19 +105,24 @@ module.exports = (function () {
 
   // ---- Algorithm Selection --------------------------------------------------
 
-  self.getNextAlgorithm = function() {
+  self.getNextAlgorithm = function(parent) {
     switch (self.opts.algorithm_selection) {
       case 'random':
-        return self.getRandomAlgorithm();
+        return self.getRandomAlgorithm(parent);
+        break;
 
       default:
         throw new Error(`Value Error : Invalid Algorithm Selection Value ${self.opts.algorithm_selection}`);
+        break;
     }
   };
 
-  self.getRandomAlgorithm = function() {
-    const randInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
-    return self.opts.algorithms[randInt(0, self.opts.algorithms.length - 1)];
+  self.getRandomAlgorithm = function(parent) {
+    const rng = parent ? parent.opts.rng : self.rng;
+    const randInt = (min, max) => min + Math.floor(rng() * (max - min + 1));
+
+    const algorithm_index = randInt(0, self.opts.algorithms.length - 1);
+    return self.opts.algorithms[algorithm_index];
   };
 
   return self.main;

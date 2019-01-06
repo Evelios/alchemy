@@ -3,8 +3,8 @@ const polyStrokes = require('../algorithms/poly-strokes');
 const Base = require('./transmutation-base');
 
 module.exports = (function() {
-  function Inscribe(parent, parent_poly) {
-    Base.call(this, parent, parent_poly);
+  function Inscribe(parent, parent_poly, options) {
+    Base.call(this, parent, parent_poly, options);
 
     this.inset_radius = this.parent_poly.radius * Math.cos(Math.PI / this.parent_poly.nsides);
     this.inset_rotation = this.parent_poly.rotation + Math.PI / this.parent_poly.nsides;
