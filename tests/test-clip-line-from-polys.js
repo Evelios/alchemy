@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-const clipLineFromPoly = require('../algorithms/clip-line-from-polys.js');
 const test = require('tape');
+
+const clipLineFromPoly = require('../algorithms/clip-line-from-polys.js');
+const circleStrokes = require('../algorithms/poly-strokes');
+const polyStrokes = require('../algorithms/poly-strokes');
 
 const deepAlmostEqual = function(t, actual, expected, msg) {
   if (isDeepAlmostEqual(actual, expected)) {
@@ -180,9 +183,26 @@ test('Multiple Polygons', t => {
     ]
   ];
 
-  const polyClip = clipLineFromPoly(line, poly, poly2);
-  // const circleClip = clipLineFromPoly(line, circle, circle2);
+  const poly_clip = clipLineFromPoly(line, poly, poly2);
+  const circle_clip = clipLineFromPoly(line, circle, circle2);
 
-  deepAlmostEqual(t, polyClip, expected, 'Polygon Clipping');
+  deepAlmostEqual(t, poly_clip, expected, 'Polygon Clipping');
+  deepAlmostEqual(t, circle_clip, expected, 'Circle Clipping');
+
+  t.end();
+});
+
+test('Self Intersection', t => {
+  const poly_stroke = polyStrokes(poly);
+  const circle_stroke = circleStrokes(circle);
+
+  const expected = [];
+
+  const poly_clip = clipLineFromPoly(poly_stroke, poly);
+  const circle_clip = clipLineFromPoly(circle_stroke, circle);
+
+  deepAlmostEqual(t, poly_clip, expected, 'Polygon Clipping');
+  deepAlmostEqual(t, circle_clip, expected, 'Circle Clipping');
+
   t.end();
 });

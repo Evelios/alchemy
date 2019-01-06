@@ -61,7 +61,7 @@ module.exports = (function() {
     if (current_stroke.length > 0) {
       out_strokes.push(current_stroke);
     }
-    
+
     return out_strokes;
   };
 
@@ -109,7 +109,8 @@ module.exports = (function() {
 
   self.pointInPoly = function(point, obj) {
     if (self.isPolygon(obj)) {
-      return self.pointInPolygon(point, obj);
+      return self.pointInPolygon(point, obj) ||
+             self.pointOnPolygon(point, obj);
     }
     else if (self.isCircle(obj)) {
       return self.pointInCircle(point, obj);
@@ -119,19 +120,29 @@ module.exports = (function() {
     }
   }
 
+  self.pointOnPolygon = function(point, poly) {
+    return polyEndpoints(poly).reduce((acc, vertex) => {
+      return acc || Vector.equals(point, vertex);
+    }, false);
+  }
+
   self.pointInPolygon = function(point, poly) {
     const angle_sum = polyEndpoints(poly).reduce((acc, vertex, i, verts) => {
       const next_vertex = verts[(i + 1) % verts.length];
       const vector1 = Vector.subtract(vertex, point);
       const vector2 = Vector.subtract(next_vertex, point);
-      return acc + Vector.angleBetween(vector1, vector2);
+      return acc + Vector.angleBetween(vector1, vector2) || 0;
     }, 0);
 
-    return Math.abs(angle_sum - 2*Math.PI) < Number.EPSILON * 10;
+    return angle_sum === 0 || self.almostEq(angle_sum, 2*Math.PI);
   }
 
   self.pointInCircle = function(point, circle) {
-    return Vector.distance(point, circle.center) < circle.radius;
+    return Vector.distance(point, circle.center) <= circle.radius;
+  }
+
+  self.almostEq = function(left, right) {
+    return Math.abs(left - right) < Number.EPSILON * 10;
   }
 
   return self.clipLineFromPolygons;
